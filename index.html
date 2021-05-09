@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Конвертер ссылок НЯК</title>
+    <link rel="stylesheet" href="normalize.css">
+</head>
+
+<body>
+    <div style="float: left; width: 46%; padding: 2%;">
+        <p>Исходные ссылки</p>
+        <textarea id="text" style="resize: vertical; min-height: 500px; width: -webkit-fill-available;"></textarea>
+    </div>
+    <div style="float: right; width: 46%; padding: 2%;">
+        <p>Результат</p>
+        <select id="domen" required>
+            <option value="nmaps">n.maps</option>
+            <option value="mapeditor">mapeditor</option>
+            <option value="mapeditorTr">mapeditor (tr)</option>
+        </select>
+        <div id="result" style="margin-top: 1%; padding: 1%; border-style: solid; border-color: darkgrey; border-width: thin; border-radius: 10px; height: 100%;"></div>
+    </div>
+    <script defer>
+        let domen = localStorage.getItem('nyak_domen');
+        let select = document.getElementById('domen');
+        if (domen) select.value = domen;
+        else select.value = 'nmaps';
+        select.addEventListener('change', () => { domen = select.value; localStorage.setItem('nyak_domen',select.value); parseText(); });
+        let text = document.getElementById('text');
+        text.addEventListener('input', parseText);
+        let result = document.getElementById('result');
+        function parseText () {
+            result.innerHTML = '';
+            let data = text.value;
+            switch (domen) {
+                case 'nmaps': data = data.replace(/mapeditor\.yandex\.com(\.tr)?(?=\/)/g,'n.maps.yandex.ru');
+                break;
+                case 'mapeditor': data = data.replace(/((n\.maps\.yandex\.ru)|(mapeditor\.yandex\.com\.tr))(?=\/)/g,'mapeditor.yandex.com');
+                break;
+                case 'mapeditorTr': data = data.replace(/((n\.maps\.yandex\.ru)|(mapeditor\.yandex\.com)(?=\/))/g,'mapeditor.yandex.com.tr');
+                break;
+            }
+            result.innerHTML = data.replace(/(((http)|(https)):\/\/)?((n\.maps\.yandex\.ru)|(mapeditor\.yandex\.com(\.tr)?))[\s\S]+?(?=([ ;\\"<>[\]\^\$`{\|}~]|$))/g,'<a href="$&" target="_blank">$&</a>').replace(/\n/g,'<br>');
+        }
+    </script>
+</body>
