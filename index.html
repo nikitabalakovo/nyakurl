@@ -24,8 +24,8 @@
     <script defer>
         let domen = localStorage.getItem('nyak_domen');
         let select = document.getElementById('domen');
-        if (domen) select.value = domen;
-        else select.value = 'nmaps';
+        if (!domen) domen = 'nmaps';
+        select.value = domen;
         select.addEventListener('change', () => { domen = select.value; localStorage.setItem('nyak_domen',select.value); parseText(); });
         let text = document.getElementById('text');
         text.addEventListener('input', parseText);
